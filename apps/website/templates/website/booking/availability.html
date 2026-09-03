@@ -1,0 +1,24 @@
+{% extends "website/base.html" %}
+{% block content %}
+{% include "website/includes/booking_stepper.html" %}
+{% include "website/includes/page_intro.html" with eyebrow="Step 2" title="Availability" lead=lead %}
+<section class="mx-auto w-full max-w-4xl px-5 py-14 sm:px-6 pt-0 space-y-4">
+  {% for item in availability %}
+  <article class="flex flex-col justify-between gap-3 border border-line bg-fog/70 p-5 sm:flex-row sm:items-center">
+    <div>
+      <h2 class="font-display text-2xl text-pine">{{ item.room.name }}</h2>
+      <p class="mt-1 text-sm text-muted">{{ item.room.short }}</p>
+      <p class="mt-2 text-xs uppercase tracking-[0.16em] text-lichen">{{ item.status }}</p>
+    </div>
+    <div class="text-left sm:text-right">
+      {% if item.estimate_display %}<p class="text-sm text-pine">From {{ item.estimate_display }}</p>{% endif %}
+      <p class="mt-1 text-xs {% if item.available %}text-leaf{% else %}text-muted{% endif %}">{% if item.available %}Ready to select{% else %}Not selectable{% endif %}</p>
+    </div>
+  </article>
+  {% endfor %}
+  <div class="flex flex-wrap gap-3 pt-4">
+    <a href="{% url 'website:booking_select' %}?{{ q }}" class="booking-btn{% if open_count == 0 %} is-disabled{% endif %}"{% if open_count == 0 %} aria-disabled="true"{% endif %}>Continue to room selection</a>
+    <a href="{% url 'website:booking_search' %}?{{ q }}" class="link-arrow">Edit search</a>
+  </div>
+</section>
+{% endblock %}

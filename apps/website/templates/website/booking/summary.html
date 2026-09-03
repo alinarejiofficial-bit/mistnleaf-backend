@@ -1,0 +1,14 @@
+{% extends "website/base.html" %}
+{% load website_extras %}
+{% block content %}
+{% include "website/includes/booking_stepper.html" %}
+{% include "website/includes/page_intro.html" with eyebrow="Step 6" title="Price Summary" lead="Review your stay total before payment." %}
+<section class="mx-auto w-full max-w-xl px-5 py-14 sm:px-6 pt-0 border border-line bg-fog/70 p-6 space-y-3">
+  <p><strong>{{ room.name }}</strong> · {{ nights }} night(s)</p>
+  <p class="text-sm text-muted">{{ query.check_in }} → {{ query.check_out }}</p>
+  <p>Subtotal: {{ subtotal|format_inr }}</p>
+  <p>Taxes (12%): {{ taxes|format_inr }}</p>
+  <p class="font-display text-2xl text-pine">Total: {{ total|format_inr }}</p>
+  <a href="{% url 'website:booking_payment' %}?{{ q }}" class="booking-btn mt-4">Continue to payment</a>
+</section>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "website/base.html" %}
+{% block content %}
+{% include "website/includes/page_intro.html" with title=title %}
+<section class="mx-auto w-full max-w-3xl px-5 py-14 sm:px-6 pt-0">
+  <p class="text-muted mb-8">{{ dining.intro }}</p>
+  <div class="space-y-4">
+    {% for meal in dining.meals %}
+    <article class="border border-line p-4"><h2 class="font-display text-xl text-pine">{{ meal.name }}</h2><p class="text-sm text-lichen">{{ meal.time }}</p><p class="mt-2 text-muted">{{ meal.note }}</p></article>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

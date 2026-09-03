@@ -1,0 +1,38 @@
+{% extends "website/base.html" %}
+{% load website_extras %}
+{% block content %}
+<section class="offers-page">
+  <header class="offers-page__intro">
+    <p class="eyebrow">{{ eyebrow|default:"Packages" }}</p>
+    <h1 class="offers-page__title">{{ title }}</h1>
+    {% if lead %}
+    <p class="offers-page__lead">{{ lead }}</p>
+    {% endif %}
+  </header>
+
+  <section class="offers-page__body">
+    <div class="offers-list offers-list--page">
+      {% for item in items %}
+      <article class="offer-panel">
+        <p class="offer-index" aria-hidden>{{ forloop.counter|stringformat:"02d" }}</p>
+        <div class="offer-panel__copy">
+          <h2 class="offer-panel__title">{{ item.title }}</h2>
+          {% if item.detail %}<p class="offer-panel__detail">{{ item.detail }}</p>{% endif %}
+          {% if item.valid %}<p class="offer-panel__valid">{{ item.valid }}</p>{% endif %}
+        </div>
+        <div class="offer-panel__price">
+          {% if item.price_from %}
+          <p class="offer-panel__from">From</p>
+          <p class="offer-panel__amount">{{ item.price_from|format_inr }}</p>
+          {% endif %}
+          <a href="{% url 'website:booking_search' %}" class="offer-panel__cta">Book package</a>
+        </div>
+      </article>
+      {% empty %}
+      <p class="offers-page__empty">Packages will appear here soon.</p>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% include "website/includes/cta_band.html" %}
+{% endblock %}

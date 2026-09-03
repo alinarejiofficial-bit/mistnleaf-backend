@@ -1,0 +1,103 @@
+{% extends "website/base.html" %}
+{% block content %}
+{% if about.status == "Published" %}
+<section class="about-page-hero">
+  <div class="about-page-hero__media" aria-hidden>
+    <img src="{{ about.image }}" alt="" class="about-page-hero__img">
+    <div class="about-page-hero__scrim"></div>
+  </div>
+  <div class="about-page-hero__content">
+    <p class="about-page-hero__eyebrow">{{ about.page_eyebrow }}</p>
+    <span class="about-page-hero__logo site-logo">
+      <img src="{{ media.logo_light }}" alt="{{ site.name }}" width="150" height="90">
+    </span>
+    <h1 class="about-page-hero__title">{{ about.title }}</h1>
+    <p class="about-page-hero__lead">{{ about.lead }}</p>
+  </div>
+</section>
+
+<section class="about-page-story">
+  <section class="mx-auto w-full max-w-6xl px-5 py-0 sm:px-6">
+    <div class="about-page-story__grid">
+      <div class="about-page-story__visual">
+        <div class="about-page-story__frame">
+          <img src="{{ about.story_image }}" alt="{{ about.story_title }}">
+        </div>
+      </div>
+      <div class="about-page-story__copy">
+        <p class="eyebrow">{{ about.story_eyebrow }}</p>
+        <h2 class="about-page-story__title">{{ about.story_title }}</h2>
+        <div class="about-page-story__prose">
+          {% if about.story_html %}
+          {{ about.story_html|safe }}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<section class="about-page-pillars">
+  <section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 md:py-28">
+    <div class="about-page-pillars__intro">
+      <p class="eyebrow">{{ about.pillars_eyebrow }}</p>
+      <h2 class="about-page-pillars__title">{{ about.pillars_title }}</h2>
+    </div>
+    <div class="about-page-pillars__grid">
+      {% for pillar in about.pillars %}
+      <article class="about-pillar">
+        <p class="about-pillar__index" aria-hidden>{{ pillar.index }}</p>
+        <h3 class="about-pillar__title">{{ pillar.title }}</h3>
+        <p class="about-pillar__copy">{{ pillar.copy }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+
+<section class="about-page-atmosphere">
+  <section class="mx-auto w-full max-w-6xl px-5 pb-14 pt-0 sm:px-6 sm:pb-20 md:pb-28">
+    <div class="about-page-atmosphere__intro">
+      <p class="eyebrow">{{ about.atmosphere_eyebrow }}</p>
+      <h2 class="about-page-atmosphere__title">{{ about.atmosphere_title }}</h2>
+      <p class="about-page-atmosphere__lead">{{ about.atmosphere_lead }}</p>
+    </div>
+    <div class="about-page-mosaic">
+      {% for item in about.mosaic %}
+      <figure class="{% if forloop.first %}about-page-mosaic__hero{% elif forloop.counter == 2 %}about-page-mosaic__side{% else %}about-page-mosaic__wide{% endif %}">
+        <img src="{{ item.src }}" alt="{{ item.alt }}">
+        <figcaption>{{ item.caption }}</figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+
+<section class="about-page-place">
+  <section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 md:py-28">
+    <div class="about-page-place__panel">
+      <div>
+        <p class="eyebrow">{{ about.place_eyebrow }}</p>
+        <h2 class="about-page-place__title">{{ about.place_title }}</h2>
+        <p class="about-page-place__lead whitespace-pre-line">{{ about.place_lead }}</p>
+        {% if about.place_meta %}<p class="about-page-place__meta">{{ about.place_meta }}</p>{% endif %}
+        <div class="about-page-place__actions">
+          <a href="{% url 'website:booking_search' %}" class="site-header__cta">{{ about.place_cta_label }}</a>
+          <a href="{% url 'website:location' %}" class="link-arrow">{{ about.place_directions_label }}</a>
+        </div>
+      </div>
+      <div class="about-page-place__media">
+        <img src="{{ about.place_image }}" alt="{{ about.place_title }}">
+      </div>
+    </div>
+  </section>
+</section>
+
+{% include "website/includes/cta_band.html" %}
+{% else %}
+<section class="mx-auto w-full max-w-3xl px-5 py-20 text-center">
+  <h1 class="font-display text-3xl text-pine">About Mistnleaf</h1>
+  <p class="mt-4 text-muted">This page is currently unpublished.</p>
+</section>
+{% endif %}
+{% endblock %}

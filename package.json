@@ -1,0 +1,11 @@
+{
+  "name": "mistnleaf-backend-website-assets",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./apps/website/assets/input.css -o ./apps/website/static/website/css/site.css --minify"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.0",
+    "tailwindcss": "^4.1.0"
+  }
+}

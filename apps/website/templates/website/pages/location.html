@@ -1,0 +1,9 @@
+{% extends "website/base.html" %}
+{% block content %}
+{% include "website/includes/page_intro.html" with title=title %}
+<section class="mx-auto w-full max-w-3xl px-5 py-14 sm:px-6 pt-0 text-muted space-y-4">
+  <p>{{ location_info.description }}</p>
+  <p>{{ location_info.address }}</p>
+  <p>{{ location_info.airport_note }}</p>
+</section>
+{% endblock %}

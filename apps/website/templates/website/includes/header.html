@@ -1,0 +1,28 @@
+<header class="site-header fixed inset-x-0 top-0 z-50" id="site-header">
+  <div class="site-header__inner">
+    <a href="{% url 'website:home' %}" class="site-header__brand" aria-label="{{ site.name }}">
+      <img src="{{ media.logo }}" alt="{{ site.name }}" width="113" height="68">
+    </a>
+
+    <div class="site-header__end">
+      <nav class="site-header__nav" aria-label="Main">
+        {% for link in nav_links %}
+        <a href="{{ link.href }}" class="site-header__link">{{ link.label }}</a>
+        {% endfor %}
+      </nav>
+
+      <a href="{% url 'website:booking_search' %}" class="site-header__cta">Book my room</a>
+
+      <button type="button" class="site-header__menu" id="mobile-menu-btn" aria-expanded="false" aria-controls="mobile-nav">Menu</button>
+    </div>
+  </div>
+
+  <div id="mobile-nav" class="site-header__drawer" hidden>
+    <nav class="site-header__drawer-nav" aria-label="Mobile">
+      {% for link in nav_links %}
+      <a href="{{ link.href }}" class="site-header__drawer-link">{{ link.label }}</a>
+      {% endfor %}
+      <a href="{% url 'website:booking_search' %}" class="site-header__cta site-header__cta--block">Book my room</a>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,34 @@
+{% extends "website/base.html" %}
+{% load website_extras %}
+{% block content %}
+{% include "website/includes/page_intro.html" with title=title eyebrow=eyebrow lead=lead %}
+<section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 pt-0 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+  {% for item in items %}
+  <article>
+    {% if item.image %}
+    <div class="img-frame relative aspect-[4/3] overflow-hidden rounded-xl mb-4">
+      <img src="{{ item.image }}" alt="{{ item.title }}" class="object-cover w-full h-full">
+    </div>
+    {% endif %}
+    {% if item.title %}
+    <h2 class="font-display text-xl text-pine">{{ item.title }}</h2>
+    {% endif %}
+    {% if item.description %}
+    <p class="mt-2 text-sm text-muted">{{ item.description }}</p>
+    {% endif %}
+    {% if item.duration %}
+    <p class="mt-2 text-xs uppercase tracking-widest text-lichen">{{ item.duration }}</p>
+    {% endif %}
+    {% if item.distance %}
+    <p class="mt-2 text-xs uppercase tracking-widest text-lichen">{{ item.distance }}</p>
+    {% endif %}
+    {% if item.detail %}
+    <p class="mt-2 text-muted">{{ item.detail }}</p>
+    {% endif %}
+    {% if item.price_from %}
+    <p class="mt-2 text-pine">{{ item.price_from|format_inr }}</p>
+    {% endif %}
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full antialiased">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site.name }} · Staycation{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ site.description }}{% endblock %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'website/css/site.css' %}">
+  <link rel="stylesheet" href="{% static 'website/css/header.css' %}?v=24">
+  <style>
+    :root {
+      --pine: #1a271c;
+      --pine-soft: #2a3b30;
+      --fog: #ffffff;
+      --mist: #fafafa;
+      --mist-deep: #f3f4f6;
+      --lichen: #78716c;
+      --leaf: #3f3f46;
+      --ink: #111827;
+      --muted: #64748b;
+      --sand-cool: #f4f4f5;
+      --glow-warm: #fafafa;
+      --background: #ffffff;
+      --foreground: #111827;
+      --line: rgba(26, 39, 28, 0.1);
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body: 'Manrope', system-ui, sans-serif;
+    }
+    html, body { background: #ffffff !important; color: #111827; }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="site-bg flex min-h-full flex-col text-ink">
+  {% include "website/includes/header.html" %}
+  <main class="site-main flex-1">{% block content %}{% endblock %}</main>
+  {% include "website/includes/footer.html" %}
+  <script src="{% static 'website/js/site.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

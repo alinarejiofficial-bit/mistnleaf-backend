@@ -1,0 +1,105 @@
+{% extends "website/base.html" %}
+{% block content %}
+<section class="contact-page">
+  <header class="contact-page__intro">
+    <p class="eyebrow">Contact</p>
+    <h1 class="contact-page__title">Contact &amp; Enquiries</h1>
+    <p class="contact-page__lead">
+      Reach the resort desk, ask about availability, or send an enquiry — we will respond with next steps.
+    </p>
+  </header>
+
+  <section class="contact-page__body">
+    <div class="contact-page__grid">
+      <aside class="contact-page__details">
+        <h2 class="contact-page__heading">Resort contact</h2>
+        <dl class="contact-page__list">
+          <div class="contact-page__item">
+            <dt>Email</dt>
+            <dd><a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a></dd>
+          </div>
+          <div class="contact-page__item">
+            <dt>Phone</dt>
+            <dd><a href="tel:{{ contact_info.phone|cut:' ' }}">{{ contact_info.phone }}</a></dd>
+          </div>
+          {% if site.hours %}
+          <div class="contact-page__item">
+            <dt>Hours</dt>
+            <dd>{{ site.hours }}</dd>
+          </div>
+          {% endif %}
+          <div class="contact-page__item">
+            <dt>Address</dt>
+            <dd class="contact-page__address">{{ contact_info.address|linebreaksbr }}</dd>
+          </div>
+          {% if contact_info.check_in_note %}
+          <div class="contact-page__item">
+            <dt>Note</dt>
+            <dd>{{ contact_info.check_in_note }}</dd>
+          </div>
+          {% endif %}
+        </dl>
+        <div class="contact-page__links">
+          <a href="{% url 'website:location' %}" class="link-arrow">View location &amp; directions</a>
+          <a href="{% url 'website:booking_search' %}" class="link-arrow">Check availability</a>
+        </div>
+      </aside>
+
+      <div class="contact-page__panel">
+        <h2 class="contact-page__heading">Submit an enquiry</h2>
+        <p class="contact-page__panel-lead">
+          Tell us what you need — stays, transfers, experiences, or general questions.
+        </p>
+
+        {% if sent %}
+        <div class="contact-page__success" role="status">
+          <p>Thank you. Your enquiry has been received. Our team will follow up by email.</p>
+          <a href="{% url 'website:contact' %}" class="link-arrow">Send another enquiry</a>
+        </div>
+        {% else %}
+        <form method="post" class="contact-form" novalidate>
+          {% csrf_token %}
+          {% if form.non_field_errors %}
+          <div class="contact-form__errors">{{ form.non_field_errors }}</div>
+          {% endif %}
+
+          <label class="contact-form__field">
+            <span class="contact-form__label">Name</span>
+            {{ form.name }}
+            {% if form.name.errors %}<span class="contact-form__error">{{ form.name.errors.0 }}</span>{% endif %}
+          </label>
+
+          <div class="contact-form__row">
+            <label class="contact-form__field">
+              <span class="contact-form__label">Email</span>
+              {{ form.email }}
+              {% if form.email.errors %}<span class="contact-form__error">{{ form.email.errors.0 }}</span>{% endif %}
+            </label>
+            <label class="contact-form__field">
+              <span class="contact-form__label">Phone</span>
+              {{ form.phone }}
+              {% if form.phone.errors %}<span class="contact-form__error">{{ form.phone.errors.0 }}</span>{% endif %}
+            </label>
+          </div>
+
+          <label class="contact-form__field">
+            <span class="contact-form__label">Subject</span>
+            {{ form.subject }}
+            {% if form.subject.errors %}<span class="contact-form__error">{{ form.subject.errors.0 }}</span>{% endif %}
+          </label>
+
+          <label class="contact-form__field">
+            <span class="contact-form__label">Message</span>
+            {{ form.message }}
+            {% if form.message.errors %}<span class="contact-form__error">{{ form.message.errors.0 }}</span>{% endif %}
+          </label>
+
+          <button type="submit" class="contact-form__submit">Send enquiry</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+</section>
+{% include "website/includes/cta_band.html" %}
+{% endblock %}

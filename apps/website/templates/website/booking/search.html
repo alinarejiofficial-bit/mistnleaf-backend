@@ -1,0 +1,43 @@
+{% extends "website/base.html" %}
+{% block content %}
+{% include "website/includes/booking_stepper.html" %}
+<section class="booking-page">
+  <header class="booking-page__intro">
+    <p class="eyebrow">Step 1</p>
+    <h1 class="booking-page__title">Search</h1>
+    <p class="booking-page__lead">Choose check-in, check-out, and guests — then continue to rooms and payment.</p>
+  </header>
+
+  <section class="booking-page__body">
+    <form method="post" class="booking-panel" novalidate>
+      {% csrf_token %}
+      {% if form.room.value %}<input type="hidden" name="room" value="{{ form.room.value }}">{% endif %}
+
+      {% if error == "dates" %}
+      <p class="booking-panel__alert" role="alert">Please select valid check-in and check-out dates.</p>
+      {% endif %}
+
+      <div class="booking-panel__row">
+        <label class="booking-field">
+          <span class="booking-field__label">Check-in</span>
+          {{ form.check_in }}
+          {% if form.check_in.errors %}<span class="booking-field__error">{{ form.check_in.errors.0 }}</span>{% endif %}
+        </label>
+        <label class="booking-field">
+          <span class="booking-field__label">Check-out</span>
+          {{ form.check_out }}
+          {% if form.check_out.errors %}<span class="booking-field__error">{{ form.check_out.errors.0 }}</span>{% endif %}
+        </label>
+      </div>
+
+      <label class="booking-field">
+        <span class="booking-field__label">Guests</span>
+        {{ form.guests }}
+        {% if form.guests.errors %}<span class="booking-field__error">{{ form.guests.errors.0 }}</span>{% endif %}
+      </label>
+
+      <button type="submit" class="booking-panel__submit">Check availability</button>
+    </form>
+  </section>
+</section>
+{% endblock %}

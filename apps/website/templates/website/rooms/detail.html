@@ -1,0 +1,19 @@
+{% extends "website/base.html" %}
+{% load website_extras %}
+{% block content %}
+{% include "website/includes/page_intro.html" with title=room.name lead=room.short %}
+<section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 md:py-28 pt-0 grid gap-10 lg:grid-cols-2">
+  <div class="img-frame relative aspect-[4/5] overflow-hidden rounded-2xl"><img src="{{ room.image }}" alt="{{ room.name }}" class="object-cover w-full h-full"></div>
+  <div>
+    <p class="text-muted leading-relaxed">{{ room.description }}</p>
+    <dl class="mt-6 grid grid-cols-2 gap-4 text-sm">
+      <div><dt class="text-lichen uppercase text-xs tracking-widest">Guests</dt><dd>Up to {{ room.guests }}</dd></div>
+      <div><dt class="text-lichen uppercase text-xs tracking-widest">Beds</dt><dd>{{ room.beds }}</dd></div>
+      <div><dt class="text-lichen uppercase text-xs tracking-widest">Size</dt><dd>{{ room.size }}</dd></div>
+      <div><dt class="text-lichen uppercase text-xs tracking-widest">From</dt><dd>{{ room.price|format_inr }} / night</dd></div>
+    </dl>
+    <ul class="mt-6 list-disc pl-5 text-sm text-muted space-y-1">{% for a in room.amenities %}<li>{{ a }}</li>{% endfor %}</ul>
+    <a href="{% url 'website:booking_search' %}?room={{ room.slug }}" class="hero-cta rounded-xl inline-flex mt-8">Check availability</a>
+  </div>
+</section>
+{% endblock %}

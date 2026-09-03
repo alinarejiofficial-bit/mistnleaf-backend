@@ -1,0 +1,22 @@
+{% extends "website/base.html" %}
+{% block content %}
+{% include "website/includes/booking_stepper.html" %}
+{% include "website/includes/page_intro.html" with eyebrow="Step 3" title="Room Selection" lead="Choose your room for this stay." %}
+<section class="mx-auto w-full max-w-3xl px-5 py-14 sm:px-6 pt-0">
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    <input type="hidden" name="checkIn" value="{{ query.check_in }}">
+    <input type="hidden" name="checkOut" value="{{ query.check_out }}">
+    <input type="hidden" name="guests" value="{{ query.guests }}">
+    {% for item in availability %}
+    <label class="flex items-center gap-3 border border-line p-4 cursor-pointer">
+      <input type="radio" name="room" value="{{ item.room.slug }}" required>
+      <span><strong class="text-pine">{{ item.room.name }}</strong><br><span class="text-sm text-muted">{{ item.room.short }}</span></span>
+    </label>
+    {% empty %}
+    <p class="text-muted">No rooms available. <a href="{% url 'website:booking_search' %}?{{ q }}" class="link-arrow">Edit search</a></p>
+    {% endfor %}
+    {% if availability %}<button type="submit" class="booking-btn">Continue</button>{% endif %}
+  </form>
+</section>
+{% endblock %}

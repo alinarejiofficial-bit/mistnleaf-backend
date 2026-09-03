@@ -1,0 +1,58 @@
+{% extends "website/base.html" %}
+{% load website_extras %}
+{% block content %}
+{% include "website/includes/page_intro.html" with title=title eyebrow=eyebrow lead=lead %}
+<section class="rooms-page">
+  <div class="rooms-index">
+    {% for room in rooms %}
+    <article class="rooms-index__card {% if forloop.counter0|divisibleby:2 %}rooms-index__card--flip{% endif %}">
+      <a href="{% url 'website:room_detail' room.slug %}" class="rooms-index__media">
+        <img src="{{ room.image }}" alt="{{ room.name }}" class="rooms-index__img" loading="lazy">
+      </a>
+      <div class="rooms-index__body">
+        <p class="rooms-index__eyebrow">Stay</p>
+        <h2 class="rooms-index__name">{{ room.name }}</h2>
+        {% if room.short %}<p class="rooms-index__short">{{ room.short }}</p>{% endif %}
+
+        <dl class="rooms-index__facts">
+          {% if room.guests %}
+          <div>
+            <dt>Occupancy</dt>
+            <dd>Up to {{ room.guests }}</dd>
+          </div>
+          {% endif %}
+          {% if room.beds %}
+          <div>
+            <dt>Beds</dt>
+            <dd>{{ room.beds }}</dd>
+          </div>
+          {% endif %}
+          {% if room.size %}
+          <div>
+            <dt>Size</dt>
+            <dd>{{ room.size }}</dd>
+          </div>
+          {% endif %}
+          {% if room.price %}
+          <div>
+            <dt>From</dt>
+            <dd>{{ room.price|format_inr }} / night</dd>
+          </div>
+          {% endif %}
+        </dl>
+
+        {% if room.availability %}<p class="rooms-index__avail">{{ room.availability }}</p>{% endif %}
+
+        <div class="rooms-index__actions">
+          <a href="{% url 'website:booking_search' %}?room={{ room.slug }}" class="booking-btn rooms-index__book">Book Now</a>
+          <a href="{% url 'website:room_detail' room.slug %}" class="link-arrow">View full details</a>
+        </div>
+      </div>
+    </article>
+    {% empty %}
+    <p class="rooms-index__empty">Rooms will appear here once they are added in the admin inventory.</p>
+    {% endfor %}
+  </div>
+</section>
+{% include "website/includes/cta_band.html" %}
+{% endblock %}

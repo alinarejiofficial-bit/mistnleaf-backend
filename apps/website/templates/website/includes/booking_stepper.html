@@ -1,0 +1,28 @@
+{% if booking_steps %}
+<nav class="booking-stepper" aria-label="Booking progress">
+  <ol class="booking-stepper__list">
+    {% for step in booking_steps %}
+    <li class="booking-stepper__item">
+      {% if step.status == "done" %}
+      <a href="{{ step.href }}{% if q %}?{{ q }}{% elif query %}?{{ query }}{% endif %}" class="booking-stepper__link">
+        <span class="booking-stepper__step booking-stepper__step--done">
+          <span class="booking-stepper__badge booking-stepper__badge--done">{{ step.number }}</span>
+          <span class="booking-stepper__label">{{ step.label }}</span>
+        </span>
+      </a>
+      {% elif step.status == "active" %}
+      <span class="booking-stepper__step booking-stepper__step--active" aria-current="step">
+        <span class="booking-stepper__badge booking-stepper__badge--active">{{ step.number }}</span>
+        <span class="booking-stepper__label">{{ step.label }}</span>
+      </span>
+      {% else %}
+      <span class="booking-stepper__step booking-stepper__step--upcoming">
+        <span class="booking-stepper__badge booking-stepper__badge--upcoming">{{ step.number }}</span>
+        <span class="booking-stepper__label">{{ step.label }}</span>
+      </span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+</nav>
+{% endif %}

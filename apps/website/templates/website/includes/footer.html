@@ -1,0 +1,62 @@
+<footer class="site-footer">
+  <div class="site-footer__media" aria-hidden>
+    <img src="{{ media.location_hills }}" alt="" class="site-footer__bg">
+  </div>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <a href="{% url 'website:home' %}" class="site-footer__logo site-logo" aria-label="{{ site.name }} home">
+        <img src="{{ media.logo }}" alt="{{ site.name }}" width="120" height="72">
+      </a>
+      {% if footer_cms.brand_eyebrow %}
+      <p class="site-footer__eyebrow">{{ footer_cms.brand_eyebrow }}</p>
+      {% endif %}
+      {% if site.tagline %}
+      <p class="site-footer__tagline">{{ site.tagline }}</p>
+      {% endif %}
+      {% if site.description %}
+      <p class="site-footer__about">{{ site.description }}</p>
+      {% endif %}
+    </div>
+    <div class="site-footer__col">
+      <p class="site-footer__heading">Contact</p>
+      <address class="site-footer__contact not-italic">
+        <p class="site-footer__contact-line"><span class="site-footer__contact-label">Address</span>{{ site.address.line1 }}{% if site.address.line2 %}<br>{{ site.address.line2 }}{% endif %}</p>
+        <p class="site-footer__contact-line"><span class="site-footer__contact-label">Email</span><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+        <p class="site-footer__contact-line"><span class="site-footer__contact-label">Phone</span><a href="tel:{{ site.phone|cut:' ' }}">{{ site.phone }}</a></p>
+      </address>
+    </div>
+    <div class="site-footer__col">
+      <p class="site-footer__heading">Explore</p>
+      <nav class="site-footer__nav" aria-label="Explore">
+        {% if footer_cms.explore_links %}
+          {% for link in footer_cms.explore_links %}
+          <a href="{{ link.href }}" class="site-footer__link">{{ link.label }}</a>
+          {% endfor %}
+        {% else %}
+          <a href="{% url 'website:about' %}" class="site-footer__link">About</a>
+          <a href="{% url 'website:rooms' %}" class="site-footer__link">Rooms</a>
+          <a href="{% url 'website:experiences' %}" class="site-footer__link">Experiences</a>
+          <a href="{% url 'website:gallery' %}" class="site-footer__link">Gallery</a>
+        {% endif %}
+      </nav>
+    </div>
+    <div class="site-footer__col">
+      <p class="site-footer__heading">Plan</p>
+      <nav class="site-footer__nav" aria-label="Plan">
+        {% if footer_cms.plan_links %}
+          {% for link in footer_cms.plan_links %}
+          <a href="{{ link.href }}" class="site-footer__link">{{ link.label }}</a>
+          {% endfor %}
+        {% else %}
+          <a href="{% url 'website:offers' %}" class="site-footer__link">Offers</a>
+          <a href="{% url 'website:faqs' %}" class="site-footer__link">FAQs</a>
+          <a href="{% url 'website:contact' %}" class="site-footer__link">Contact</a>
+          <a href="{% url 'website:booking_search' %}" class="site-footer__link">Check availability</a>
+        {% endif %}
+      </nav>
+    </div>
+  </div>
+  <div class="site-footer__bar">
+    <p>{{ footer_cms.copyright|default:site.name }}</p>
+  </div>
+</footer>

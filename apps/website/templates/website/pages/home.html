@@ -1,0 +1,296 @@
+{% extends "website/base.html" %}
+{% load website_extras %}
+{% block content %}
+{% if show_sections.hero %}
+<section class="hero" aria-label="Mistnleaf retreat">
+  <div class="hero-stage" aria-hidden>
+    <div class="hero-bg-motion"><img src="{{ homepage.hero_media }}" alt="" class="hero-bg object-cover w-full h-full absolute inset-0"></div>
+    <div class="hero-scrim"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-copy">
+      <p class="hero-eyebrow">{{ homepage.eyebrow }}</p>
+      <h1 class="hero-title">{{ homepage.title }}</h1>
+      <p class="hero-lead">{{ homepage.lead }}</p>
+      <div class="hero-actions">
+        <a href="{% url 'website:booking_search' %}" class="hero-cta rounded-xl">{{ homepage.cta_primary }}</a>
+        <a href="{% url 'website:rooms' %}" class="hero-cta hero-cta--ghost rounded-xl">{{ homepage.cta_secondary }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if show_sections.about %}
+<section class="about-band">
+  <section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 md:py-28">
+    <div class="about-grid">
+      <div class="about-copy">
+        <p class="eyebrow">{{ about_band.eyebrow }}</p>
+        <h2 class="about-title">{{ about_band.title }}</h2>
+        <div class="about-lead">{{ about_band.content_html|safe }}</div>
+        <a href="{% url 'website:about' %}" class="link-arrow about-link">{{ about_band.cta_label }}</a>
+      </div>
+      <div class="about-visual"><div class="about-media"><img src="{{ about_band.image }}" alt="Mistnleaf lodge" class="object-cover w-full h-full"></div></div>
+    </div>
+  </section>
+</section>
+{% endif %}
+
+{% if show_sections.rooms %}
+<section class="band-soft">
+  <section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 md:py-28">
+    <div class="mb-9 text-center sm:mb-12 md:mb-14">
+      <p class="eyebrow">{{ rooms_band.eyebrow }}</p>
+      <h2 class="mt-3 font-display text-balance text-[1.85rem] text-pine sm:text-3xl md:text-[2.75rem]">{{ rooms_band.title }}</h2>
+      <p class="mx-auto mt-3 max-w-xl text-[0.98rem] leading-relaxed text-muted sm:mt-4 sm:text-[1.02rem]">{{ rooms_band.lead }}</p>
+      <div class="mt-5 flex justify-center sm:mt-6">
+        <a href="{% url 'website:rooms' %}" class="link-arrow">{{ rooms_band.view_all_label }}</a>
+      </div>
+    </div>
+    <div class="featured-rooms-grid" data-count="{{ rooms|length }}">
+      {% for room in rooms %}
+      <a href="{% url 'website:room_detail' room.slug %}" class="featured-rooms-card group">
+        <div class="img-frame featured-rooms-card__media">
+          <img src="{{ room.image }}" alt="{{ room.name }}" loading="lazy">
+        </div>
+        <div class="featured-rooms-card__body">
+          <h3 class="featured-rooms-card__title">{{ room.name }}</h3>
+          <p class="featured-rooms-card__copy">{{ room.short }}</p>
+          <p class="featured-rooms-card__price">From {{ room.price|format_inr }} / night</p>
+          <span class="featured-rooms-card__cta">View room</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endif %}
+
+{% if show_sections.experiences %}
+<section class="experiences-band">
+  <section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 md:py-28">
+    <div class="mb-9 text-center sm:mb-12 md:mb-14">
+      <p class="eyebrow">{{ experiences_band.eyebrow }}</p>
+      <h2 class="mt-3 font-display text-balance text-[1.85rem] text-pine sm:text-3xl md:text-[2.75rem]">{{ experiences_band.title }}</h2>
+      <p class="mx-auto mt-3 max-w-xl text-[0.98rem] leading-relaxed text-muted sm:mt-4 sm:text-[1.02rem]">{{ experiences_band.lead }}</p>
+      <div class="mt-5 flex justify-center sm:mt-6">
+        <a href="{% url 'website:experiences' %}" class="link-arrow">{{ experiences_band.view_all_label }}</a>
+      </div>
+    </div>
+    <div class="experiences-grid">
+      {% for item in experiences %}
+      <article class="experience-card group">
+        <div class="experience-media img-frame">
+          <img src="{{ item.image }}" alt="{{ item.title }}" loading="lazy">
+        </div>
+        <div class="experience-body">
+          <p class="experience-duration">{{ item.duration }}</p>
+          <h3 class="experience-title">{{ item.title }}</h3>
+          <p class="experience-copy">{{ item.description }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endif %}
+
+{% if show_sections.amenities %}
+<section class="band-soft">
+  <section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 md:py-28">
+    <div class="mb-9 text-center sm:mb-12 md:mb-14">
+      <p class="eyebrow">{{ amenities_band.eyebrow }}</p>
+      <h2 class="mt-3 font-display text-balance text-[1.85rem] text-pine sm:text-3xl md:text-[2.75rem]">{{ amenities_band.title }}</h2>
+      <p class="mx-auto mt-3 max-w-xl text-[0.98rem] leading-relaxed text-muted sm:mt-4 sm:text-[1.02rem]">{{ amenities_band.lead }}</p>
+      <div class="mt-5 flex justify-center sm:mt-6">
+        <a href="{% url 'website:amenities' %}" class="link-arrow">{{ amenities_band.view_all_label }}</a>
+      </div>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {% for item in amenities %}
+      <article>
+        {% if item.image %}
+        <div class="img-frame relative mb-4 aspect-[4/3] overflow-hidden rounded-xl">
+          <img src="{{ item.image }}" alt="{{ item.title }}" class="h-full w-full object-cover" loading="lazy">
+        </div>
+        {% endif %}
+        <h3 class="font-display text-xl text-pine">{{ item.title }}</h3>
+        <p class="mt-2 text-sm text-muted">{{ item.description }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endif %}
+
+{% if show_sections.gallery %}
+<section class="gallery-band">
+  <div class="gallery-mist" aria-hidden>
+    <span class="gallery-mist__cloud gallery-mist__cloud--a"></span>
+    <span class="gallery-mist__cloud gallery-mist__cloud--b"></span>
+  </div>
+  <section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 md:py-28">
+    <div class="gallery-intro">
+      <p class="eyebrow">{{ gallery_band.eyebrow }}</p>
+      <h2 class="gallery-intro__title">{{ gallery_band.title }}</h2>
+      {% if gallery_band.lead %}
+      <p class="gallery-intro__lead">{{ gallery_band.lead }}</p>
+      {% endif %}
+      <div class="mt-5 flex justify-center sm:mt-6">
+        <a href="{% url 'website:gallery' %}" class="link-arrow gallery-intro__link">{{ gallery_band.view_all_label }}</a>
+      </div>
+    </div>
+    <div class="gallery-mosaic">
+      {% for item in gallery_images %}
+      <figure class="gallery-tile {% cycle 'gallery-tile--hero' 'gallery-tile--side' 'gallery-tile--side' 'gallery-tile--wide' 'gallery-tile--square' 'gallery-tile--square' 'gallery-tile--panorama' %}">
+        <img src="{{ item.src }}" alt="{{ item.alt }}" class="gallery-tile__img" loading="lazy">
+        <span class="gallery-tile__index" aria-hidden>{% if forloop.counter < 10 %}0{% endif %}{{ forloop.counter }}</span>
+        <figcaption class="gallery-tile__caption">
+          <span class="gallery-tile__label">{% firstof item.label item.alt %}</span>
+        </figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endif %}
+
+{% if show_sections.offers %}
+<section class="packages-band">
+  <section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 md:py-28">
+    <div class="mb-9 text-center sm:mb-12 md:mb-14">
+      <p class="eyebrow">{{ offers_band.eyebrow }}</p>
+      <h2 class="mt-3 font-display text-balance text-[1.85rem] text-pine sm:text-3xl md:text-[2.75rem]">{{ offers_band.title }}</h2>
+      <p class="mx-auto mt-3 max-w-xl text-[0.98rem] leading-relaxed text-muted sm:mt-4 sm:text-[1.02rem]">{{ offers_band.lead }}</p>
+      <div class="mt-5 flex justify-center sm:mt-6">
+        <a href="{% url 'website:offers' %}" class="link-arrow">{{ offers_band.view_all_label }}</a>
+      </div>
+    </div>
+    <div class="offers-list">
+      {% for item in offers %}
+      <article class="offer-panel">
+        <p class="offer-index" aria-hidden>{{ forloop.counter|stringformat:"02d" }}</p>
+        <div class="offer-panel__copy">
+          <h3 class="offer-panel__title">{{ item.title }}</h3>
+          <p class="offer-panel__detail">{{ item.detail }}</p>
+          {% if item.valid %}<p class="offer-panel__valid">{{ item.valid }}</p>{% endif %}
+        </div>
+        <div class="offer-panel__price">
+          {% if item.price_from %}
+          <p class="offer-panel__from">From</p>
+          <p class="offer-panel__amount">{{ item.price_from|format_inr }}</p>
+          {% endif %}
+          <a href="{% url 'website:booking_search' %}" class="offer-panel__cta">Book package</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endif %}
+
+{% if show_sections.testimonials %}
+<section class="guests-band">
+  <div class="guests-mist" aria-hidden>
+    <span class="guests-mist__cloud guests-mist__cloud--a"></span>
+    <span class="guests-mist__cloud guests-mist__cloud--b"></span>
+    <span class="guests-mist__cloud guests-mist__cloud--c"></span>
+  </div>
+  <section class="mx-auto w-full max-w-6xl px-5 py-14 sm:px-6 sm:py-20 md:py-28">
+    <div class="mb-9 text-center sm:mb-12 md:mb-14">
+      <p class="eyebrow">{{ testimonials_band.eyebrow }}</p>
+      <h2 class="mt-3 font-display text-balance text-[1.85rem] text-pine sm:text-3xl md:text-[2.75rem]">{{ testimonials_band.title }}</h2>
+      <p class="mx-auto mt-3 max-w-xl text-[0.98rem] leading-relaxed text-muted sm:mt-4 sm:text-[1.02rem]">{{ testimonials_band.lead }}</p>
+    </div>
+    <div class="guests-grid">
+      {% for item in testimonials %}
+      <blockquote class="testimonial-panel testimonial-panel--{{ forloop.counter }}">
+        <span class="testimonial-index" aria-hidden>{{ forloop.counter|stringformat:"02d" }}</span>
+        <span class="testimonial-mark" aria-hidden>“</span>
+        <p class="testimonial-quote">{{ item.quote }}</p>
+        <footer class="testimonial-footer">
+          <span class="testimonial-avatar" aria-hidden>{{ item.initials }}</span>
+          <span>
+            <span class="testimonial-name">{{ item.name }}</span>
+            {% if item.place %}<span class="testimonial-place">{{ item.place }}</span>{% endif %}
+          </span>
+        </footer>
+      </blockquote>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endif %}
+
+{% if show_sections.location %}
+<section class="location-band">
+  <div class="location-band__media" aria-hidden>
+    <img src="{{ media.location_hills }}" alt="" class="location-band__img">
+  </div>
+  <div class="location-band__content">
+    <div class="location-band__inner">
+      <p class="location-band__eyebrow">{{ location_band.eyebrow }}</p>
+      <h2 class="location-band__title">{{ location_band.title }}</h2>
+      {% if location_band.lead %}
+      <p class="location-band__lead">{{ location_band.lead }}</p>
+      {% elif location_info.description %}
+      <p class="location-band__lead">{{ location_info.description }}</p>
+      {% endif %}
+
+      <div class="location-band__meta">
+        {% if location_info.address %}
+        <div class="location-band__meta-item">
+          <span class="location-band__meta-label">Address</span>
+          <p class="location-band__meta-value whitespace-pre-line">{{ location_info.address }}</p>
+        </div>
+        {% endif %}
+        {% if location_info.airport_note %}
+        <div class="location-band__meta-item">
+          <span class="location-band__meta-label">Airport</span>
+          <p class="location-band__meta-value">{{ location_info.airport_note }}</p>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if location_info.description and location_band.lead and location_info.description != location_band.lead %}
+      <p class="location-band__note">{{ location_info.description }}</p>
+      {% endif %}
+
+      <div class="location-band__actions">
+        {% if location_info.directions_url %}
+        <a href="{{ location_info.directions_url }}" class="location-band__cta" target="_blank" rel="noopener noreferrer">{{ location_band.directions_label }}</a>
+        {% else %}
+        <a href="{% url 'website:location' %}" class="location-band__cta">{{ location_band.directions_label }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if show_sections.faqs %}
+<section class="experiences-band">
+  <section class="mx-auto w-full max-w-3xl px-5 py-14 sm:px-6 sm:py-20 md:py-28">
+    <div class="mb-9 text-center sm:mb-12 md:mb-14">
+      <p class="eyebrow">{{ faqs_band.eyebrow }}</p>
+      <h2 class="mt-3 font-display text-balance text-[1.85rem] text-pine sm:text-3xl md:text-[2.75rem]">{{ faqs_band.title }}</h2>
+      <p class="mx-auto mt-3 max-w-xl text-[0.98rem] leading-relaxed text-muted sm:mt-4 sm:text-[1.02rem]">{{ faqs_band.lead }}</p>
+      <div class="mt-5 flex justify-center sm:mt-6">
+        <a href="{% url 'website:faqs' %}" class="link-arrow">{{ faqs_band.view_all_label }}</a>
+      </div>
+    </div>
+    <div class="space-y-4">
+      {% for item in faqs %}
+      <details class="rounded-xl border border-line bg-fog/40 p-4">
+        <summary class="cursor-pointer font-medium text-pine">{{ item.q }}</summary>
+        <p class="mt-3 text-sm text-muted">{{ item.a }}</p>
+      </details>
+      {% endfor %}
+    </div>
+  </section>
+</section>
+{% endif %}
+
+{% include "website/includes/cta_band.html" %}
+{% endblock %}

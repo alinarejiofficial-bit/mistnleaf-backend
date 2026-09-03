@@ -1,0 +1,19 @@
+{% extends "website/base.html" %}
+{% block content %}
+{% include "website/includes/booking_stepper.html" %}
+{% include "website/includes/page_intro.html" with eyebrow="Step 5" title="Guest Details" lead="Tell us who is arriving." %}
+<section class="mx-auto w-full max-w-xl px-5 py-14 sm:px-6 pt-0">
+  <form method="post" class="grid gap-4">
+    {% csrf_token %}
+    <input type="hidden" name="checkIn" value="{{ query.check_in }}">
+    <input type="hidden" name="checkOut" value="{{ query.check_out }}">
+    <input type="hidden" name="guests" value="{{ query.guests }}">
+    <input type="hidden" name="room" value="{{ query.room }}">
+    <label class="block text-sm text-muted">Full name<input class="mt-1 w-full border border-line bg-fog px-3 py-2" name="name" value="{{ query.name }}" required></label>
+    <label class="block text-sm text-muted">Email<input class="mt-1 w-full border border-line bg-fog px-3 py-2" type="email" name="email" value="{{ query.email }}" required></label>
+    <label class="block text-sm text-muted">Phone<input class="mt-1 w-full border border-line bg-fog px-3 py-2" name="phone" value="{{ query.phone }}"></label>
+    <label class="block text-sm text-muted">Special requests<textarea class="mt-1 w-full border border-line bg-fog px-3 py-2" name="notes" rows="4">{{ query.notes }}</textarea></label>
+    <button type="submit" class="booking-btn">Review price</button>
+  </form>
+</section>
+{% endblock %}
