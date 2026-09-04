@@ -189,18 +189,33 @@ class StaffBookingCreateSerializer(serializers.Serializer):
             raise serializers.ValidationError({"checkOut": "Check-out must be after check-in."})
 
         room_type = None
-        slug_or_name = attrs.get("room") or attrs.get("roomType") or ""
-        if slug_or_name:
-            room_type = RoomType.objects.filter(slug=slug_or_name).first() or RoomType.objects.filter(
-                name__iexact=slug_or_name
-            ).first()
+        unit = None
+        room_unit_id = attrs.get("room_unit")
+        if room_unit_id:
+            unit = RoomUnit.objects.filter(id=room_unit_id).select_related("room_type").first()
+            if unit:
+                room_type = unit.room_type
+
+        # Prefer explicit room type (name/slug). `room` used to be sent as a unit label by mistake.
+        if not room_type:
+            for key in ("roomType", "room"):
+                slug_or_name = (attrs.get(key) or "").strip()
+                if not slug_or_name:
+                    continue
+                room_type = (
+                    RoomType.objects.filter(slug=slug_or_name).first()
+                    or RoomType.objects.filter(name__iexact=slug_or_name).first()
+                )
+                if room_type:
+                    break
+
         if not room_type:
             raise serializers.ValidationError({"room": "Unknown room type."})
         attrs["room_type"] = room_type
 
-        unit = None
-        room_unit_id = attrs.get("room_unit")
-        if room_unit_id:
+        if unit and unit.room_type_id != room_type.id:
+            unit = None
+        if not unit and room_unit_id:
             unit = RoomUnit.objects.filter(id=room_unit_id, room_type=room_type).first()
         if not unit:
             unit = assign_available_unit(room_type)
