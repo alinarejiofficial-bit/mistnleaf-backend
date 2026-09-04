@@ -269,12 +269,32 @@
   background: none !important;
   border: none !important;
   box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .hero-copy::before,
 .hero-copy::after {
   content: none !important;
   display: none !important;
+}
+
+.hero-content {
+  background: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Kill centered radial “box” behind hero text */
+.hero-scrim {
+  background: linear-gradient(
+    to top,
+    rgba(26, 39, 28, 0.58) 0%,
+    rgba(26, 39, 28, 0.28) 38%,
+    rgba(26, 39, 28, 0.1) 62%,
+    transparent 100%
+  ) !important;
 }
 
 /* Featured rooms — always a horizontal row from tablet up */
