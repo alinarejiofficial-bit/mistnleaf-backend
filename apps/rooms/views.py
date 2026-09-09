@@ -26,6 +26,7 @@ class PublicRoomTypeListView(generics.ListAPIView):
     serializer_class = PublicRoomTypeSerializer
     permission_classes = [permissions.AllowAny]
     authentication_classes = []
+    pagination_class = None
 
     def get_queryset(self):
         return RoomType.objects.filter(is_active=True)
