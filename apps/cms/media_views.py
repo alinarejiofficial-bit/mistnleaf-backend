@@ -15,15 +15,32 @@ from .permissions import IsCmsEditor
 ALLOWED_IMAGE_TYPES = frozenset(
     {"image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"}
 )
-MAX_UPLOAD_BYTES = 10 * 1024 * 1024
+ALLOWED_VIDEO_TYPES = frozenset(
+    {
+        "video/mp4",
+        "video/webm",
+        "video/quicktime",
+        "video/x-msvideo",
+        "video/ogg",
+    }
+)
+ALLOWED_MEDIA_TYPES = ALLOWED_IMAGE_TYPES | ALLOWED_VIDEO_TYPES
+MAX_IMAGE_BYTES = 10 * 1024 * 1024
+MAX_VIDEO_BYTES = 50 * 1024 * 1024
+
+
+def max_bytes_for(content_type: str) -> int:
+    if content_type.startswith("video/"):
+        return MAX_VIDEO_BYTES
+    return MAX_IMAGE_BYTES
 
 
 class CmsMediaUploadView(APIView):
     """
-    Upload CMS images/media.
+    Upload CMS images/videos.
 
     Accepts multipart file upload or JSON with base64 data URL
-    (compatible with admin dashboard ImageUploadField).
+    (compatible with admin dashboard ImageUploadField / MediaUrlField).
     """
 
     authentication_classes = [CmsEditorAuthentication]
@@ -36,38 +53,61 @@ class CmsMediaUploadView(APIView):
 
         upload_file = request.FILES.get("file")
         if upload_file:
-            if upload_file.content_type not in ALLOWED_IMAGE_TYPES:
+            content_type = (upload_file.content_type or "").lower()
+            if content_type not in ALLOWED_MEDIA_TYPES:
                 return Response(
-                    {"error": "Unsupported file type. Upload JPEG, PNG, WebP, GIF, or SVG."},
+                    {
+                        "error": (
+                            "Unsupported file type. Upload JPEG, PNG, WebP, GIF, SVG, "
+                            "or video (MP4, WebM, MOV)."
+                        )
+                    },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            if upload_file.size > MAX_UPLOAD_BYTES:
+            limit = max_bytes_for(content_type)
+            if upload_file.size > limit:
+                mb = limit // (1024 * 1024)
                 return Response(
-                    {"error": "File too large. Maximum size is 10 MB."},
+                    {"error": f"File too large. Maximum size is {mb} MB."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             media = CmsMedia.objects.create(
                 file=upload_file,
                 original_name=upload_file.name,
-                content_type=upload_file.content_type or "",
+                content_type=content_type,
                 size_bytes=upload_file.size,
                 uploaded_by=user,
             )
-            return Response({"ok": True, "url": request.build_absolute_uri(media.url), "id": str(media.id)})
+            return Response(
+                {"ok": True, "url": request.build_absolute_uri(media.url), "id": str(media.id)}
+            )
 
         data_url = request.data.get("dataUrl") or request.data.get("image")
         filename = request.data.get("filename") or "upload.png"
         if data_url:
             try:
-                match = re.match(r"^data:(image/[\w.+-]+);base64,(.+)$", data_url, re.DOTALL)
+                match = re.match(
+                    r"^data:((?:image|video)/[\w.+-]+);base64,(.+)$",
+                    data_url,
+                    re.DOTALL,
+                )
                 if not match:
                     return Response({"error": "Invalid data URL."}, status=status.HTTP_400_BAD_REQUEST)
                 content_type, encoded = match.groups()
-                if content_type not in ALLOWED_IMAGE_TYPES:
-                    return Response({"error": "Unsupported image type."}, status=status.HTTP_400_BAD_REQUEST)
+                content_type = content_type.lower()
+                if content_type not in ALLOWED_MEDIA_TYPES:
+                    return Response(
+                        {"error": "Unsupported media type."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
                 raw = base64.b64decode(encoded)
-                if len(raw) > MAX_UPLOAD_BYTES:
-                    return Response({"error": "File too large. Maximum size is 10 MB."}, status=status.HTTP_400_BAD_REQUEST)
+                limit = max_bytes_for(content_type)
+                if len(raw) > limit:
+                    mb = limit // (1024 * 1024)
+                    return Response(
+                        {"error": f"File too large. Maximum size is {mb} MB."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
                 media = CmsMedia(
                     original_name=filename,
                     content_type=content_type,
@@ -76,9 +116,14 @@ class CmsMediaUploadView(APIView):
                 )
                 media.file.save(filename, ContentFile(raw), save=False)
                 media.save()
-                return Response({"ok": True, "url": request.build_absolute_uri(media.url), "id": str(media.id)})
+                return Response(
+                    {"ok": True, "url": request.build_absolute_uri(media.url), "id": str(media.id)}
+                )
             except (ValueError, TypeError):
-                return Response({"error": "Invalid base64 image data."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "Invalid base64 media data."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
         return Response({"error": "Provide a file or dataUrl."}, status=status.HTTP_400_BAD_REQUEST)
 
