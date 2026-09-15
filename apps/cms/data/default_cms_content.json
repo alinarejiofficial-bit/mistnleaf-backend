@@ -513,37 +513,37 @@
       },
       {
         "label": "Rooms",
-        "href": "#rooms"
+        "href": "/rooms"
       },
       {
         "label": "Experiences",
-        "href": "#experiences"
+        "href": "/experiences"
       },
       {
         "label": "Amenities",
-        "href": "#amenities"
+        "href": "/amenities"
       },
       {
         "label": "Gallery",
-        "href": "#gallery"
+        "href": "/gallery"
       }
     ],
     "planLinks": [
       {
         "label": "Offers",
-        "href": "#offers"
+        "href": "/offers"
       },
       {
         "label": "FAQs",
-        "href": "#faqs"
+        "href": "/faqs"
       },
       {
         "label": "Contact",
-        "href": "#contact"
+        "href": "/contact"
       },
       {
         "label": "Check availability",
-        "href": "#book"
+        "href": "/booking/search"
       }
     ],
     "policyLinks": [
@@ -561,7 +561,7 @@
       }
     ],
     "staffLoginLabel": "Staff login",
-    "staffLoginHref": "/login",
+    "staffLoginHref": "/staff/login",
     "status": "Published",
     "updatedAt": "2026-08-28"
   }
