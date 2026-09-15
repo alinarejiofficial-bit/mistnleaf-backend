@@ -508,6 +508,10 @@
     "copyright": "© 2026 Mistnleaf. Nature in every breath.",
     "exploreLinks": [
       {
+        "label": "Home",
+        "href": "/"
+      },
+      {
         "label": "About",
         "href": "/about"
       },
