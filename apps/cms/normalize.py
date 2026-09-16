@@ -58,6 +58,29 @@ def _normalize_footer(raw: dict | None) -> dict:
     }
 
 
+def _fill_blank(value, fallback):
+    if value is None:
+        return fallback
+    if isinstance(value, str) and not value.strip():
+        return fallback
+    if isinstance(value, list) and len(value) == 0:
+        return fallback
+    return value
+
+
+def _fill_item_images(items: list[dict], defaults: list[dict], image_key: str = "imageUrl") -> list[dict]:
+    by_id = {item.get("id"): item for item in defaults if item.get("id")}
+    filled = []
+    for index, item in enumerate(items):
+        base = by_id.get(item.get("id")) or (
+            defaults[index] if index < len(defaults) else {}
+        )
+        next_item = {**item}
+        next_item[image_key] = _fill_blank(item.get(image_key), base.get(image_key, ""))
+        filled.append(next_item)
+    return filled
+
+
 def normalize_cms_content(raw: dict) -> dict:
     defaults = default_cms_content()
     legacy_homepage = raw.get("homepage") or {}
@@ -84,6 +107,10 @@ def normalize_cms_content(raw: dict) -> dict:
         "heroEyebrow": legacy_homepage.get("heroEyebrow")
         or legacy_homepage.get("introductionTitle")
         or defaults["homepage"]["heroEyebrow"],
+        "heroMediaUrl": _fill_blank(
+            legacy_homepage.get("heroMediaUrl"),
+            defaults["homepage"].get("heroMediaUrl", ""),
+        ),
         "heroCtaPrimary": legacy_homepage.get("heroCtaPrimary", defaults["homepage"]["heroCtaPrimary"]),
         "heroCtaSecondary": legacy_homepage.get("heroCtaSecondary", defaults["homepage"]["heroCtaSecondary"]),
         "featuredExperienceIds": legacy_homepage.get(
@@ -120,13 +147,18 @@ def normalize_cms_content(raw: dict) -> dict:
         },
     }
 
+    default_rooms = {room.get("id"): room for room in defaults.get("rooms") or []}
     rooms = []
-    for room in raw.get("rooms", defaults["rooms"]):
+    for index, room in enumerate(raw.get("rooms", defaults["rooms"])):
+        base = default_rooms.get(room.get("id")) or (
+            defaults["rooms"][index] if index < len(defaults["rooms"]) else {}
+        )
         rooms.append(
             {
                 **room,
                 "tagline": room.get("tagline", ""),
                 "priceFrom": room.get("priceFrom", 0),
+                "images": _fill_blank(room.get("images"), base.get("images") or []),
             }
         )
 
@@ -146,14 +178,30 @@ def normalize_cms_content(raw: dict) -> dict:
             }
         )
 
+    amenities = raw.get("amenities")
+    if amenities:
+        amenities = _fill_item_images(amenities, defaults.get("amenities") or [])
+    else:
+        amenities = deepcopy(defaults["amenities"])
+
+    experiences = _fill_item_images(experiences, defaults.get("experiences") or [])
+
+    gallery_images = raw.get("galleryImages")
+    if gallery_images:
+        gallery_images = _fill_item_images(
+            gallery_images, defaults.get("galleryImages") or []
+        )
+    else:
+        gallery_images = deepcopy(defaults["galleryImages"])
+
     return {
         "homepage": homepage,
         "about": _normalize_about(raw.get("about")),
         "rooms": rooms,
-        "amenities": raw.get("amenities", deepcopy(defaults["amenities"])),
+        "amenities": amenities,
         "experiences": experiences,
         "galleryCategories": raw.get("galleryCategories", deepcopy(defaults["galleryCategories"])),
-        "galleryImages": raw.get("galleryImages", deepcopy(defaults["galleryImages"])),
+        "galleryImages": gallery_images,
         "offersSection": {**defaults["offersSection"], **(raw.get("offersSection") or {})},
         "offers": offers,
         "testimonials": testimonials,
@@ -197,6 +245,9 @@ def _normalize_about(raw: dict | None) -> dict:
                     **base,
                     **item,
                     "id": item.get("id") or f"about-mosaic-{index + 1}",
+                    "imageUrl": _fill_blank(
+                        item.get("imageUrl"), base.get("imageUrl", "")
+                    ),
                 }
             )
     else:
@@ -221,8 +272,9 @@ def _normalize_about(raw: dict | None) -> dict:
         "placeCtaLabel",
         "placeDirectionsLabel",
         "placeImageUrl",
+        "imageUrl",
     ):
-        if key not in source or source.get(key) in (None,):
+        if key not in source or source.get(key) in (None, ""):
             merged[key] = defaults.get(key, "")
 
     merged["pillars"] = pillars
