@@ -159,10 +159,16 @@ class StaffUserViewSet(viewsets.ModelViewSet):
         next_role = serializer.validated_data.get("role", instance.role)
         if "role" in serializer.validated_data:
             assert_can_assign_role(request.user, next_role)
-        next_active = serializer.validated_data.get("is_active", instance.is_active)
+        status_value = serializer.validated_data.get("status")
+        if status_value == "Disabled":
+            next_active = False
+        elif status_value in ("Active", "Invited"):
+            next_active = True
+        else:
+            next_active = serializer.validated_data.get("is_active", instance.is_active)
         assert_not_last_super_admin(instance, next_role=next_role, next_active=next_active)
-        serializer.save()
-        return Response(UserSerializer(instance).data)
+        updated = serializer.save()
+        return Response(UserSerializer(updated).data)
 
     @extend_schema(summary="Delete staff user", tags=["Staff — Users"])
     def destroy(self, request, *args, **kwargs):
