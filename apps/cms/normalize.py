@@ -32,6 +32,12 @@ def _normalize_offer(offer: dict, index: int) -> dict:
     terms = offer.get("terms") or []
     if not terms:
         terms = _parse_terms_from_details(offer.get("details", ""))
+    applies_to = offer.get("appliesTo") or "all_rooms"
+    if applies_to not in ("all_rooms", "selected_rooms", "packages"):
+        applies_to = "all_rooms"
+    room_types = offer.get("roomTypes") or []
+    if not isinstance(room_types, list):
+        room_types = []
     return {
         **offer,
         "priceFrom": offer.get("priceFrom", 0),
@@ -40,6 +46,8 @@ def _normalize_offer(offer: dict, index: int) -> dict:
         "bookCtaLabel": offer.get("bookCtaLabel", "Book package →"),
         "bookCtaHref": offer.get("bookCtaHref", "#contact"),
         "sortOrder": offer.get("sortOrder", index),
+        "appliesTo": applies_to,
+        "roomTypes": [str(item) for item in room_types if item],
     }
 
 

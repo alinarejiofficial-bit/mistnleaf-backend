@@ -391,7 +391,9 @@
       "validTo": "2026-12-31",
       "active": true,
       "status": "Published",
-      "updatedAt": "2026-08-28"
+      "updatedAt": "2026-08-28",
+      "appliesTo": "all_rooms",
+      "roomTypes": []
     },
     {
       "id": "cms-offer-2",
@@ -412,7 +414,9 @@
       "validTo": "2026-12-31",
       "active": true,
       "status": "Published",
-      "updatedAt": "2026-08-17"
+      "updatedAt": "2026-08-17",
+      "appliesTo": "all_rooms",
+      "roomTypes": []
     },
     {
       "id": "cms-offer-3",
@@ -433,7 +437,9 @@
       "validTo": "2026-12-31",
       "active": true,
       "status": "Published",
-      "updatedAt": "2026-08-16"
+      "updatedAt": "2026-08-16",
+      "appliesTo": "all_rooms",
+      "roomTypes": []
     }
   ],
   "testimonials": [
