@@ -153,9 +153,41 @@ class StaffBookingSerializer(serializers.ModelSerializer):
 
 
 class StaffBookingUpdateSerializer(serializers.ModelSerializer):
+    guest = serializers.CharField(source="guest_name", required=False, max_length=120)
+    email = serializers.EmailField(source="guest_email", required=False)
+    phone = serializers.CharField(source="guest_phone", required=False, max_length=20)
+    checkIn = serializers.DateField(source="check_in", required=False)
+    checkOut = serializers.DateField(source="check_out", required=False)
+    adults = serializers.IntegerField(required=False, min_value=1, max_value=6)
+    children = serializers.IntegerField(required=False, min_value=0, max_value=6)
+    source = serializers.ChoiceField(choices=Booking.Source.choices, required=False)
+
     class Meta:
         model = Booking
-        fields = ("status", "payment_status", "paid_amount", "room_unit", "notes")
+        fields = (
+            "status",
+            "payment_status",
+            "paid_amount",
+            "room_unit",
+            "notes",
+            "guest",
+            "email",
+            "phone",
+            "checkIn",
+            "checkOut",
+            "adults",
+            "children",
+            "source",
+        )
+
+    def validate(self, attrs):
+        check_in = attrs.get("check_in", getattr(self.instance, "check_in", None))
+        check_out = attrs.get("check_out", getattr(self.instance, "check_out", None))
+        if check_in and check_out and check_out <= check_in:
+            raise serializers.ValidationError(
+                {"checkOut": "Check-out must be after check-in."}
+            )
+        return attrs
 
     def update(self, instance, validated_data):
         instance = super().update(instance, validated_data)
