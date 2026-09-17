@@ -74,8 +74,8 @@ ROOM_TYPES = [
         ],
         "sort_order": 2,
         "units": [
-            {"code": "MC-01", "floor": "G", "status": "available", "housekeeping_status": "clean", "assignee": "Anita D'Souza"},
-            {"code": "MC-02", "floor": "G", "status": "dirty", "housekeeping_status": "dirty", "assignee": "Anita D'Souza"},
+            {"code": "MC-01", "floor": "G", "status": "available", "housekeeping_status": "clean", "assignee": "Sofia Fernandes"},
+            {"code": "MC-02", "floor": "G", "status": "dirty", "housekeeping_status": "dirty", "assignee": "Ravi Kumar"},
             {"code": "MC-03", "floor": "G", "status": "available", "housekeeping_status": "clean", "assignee": "Ravi Kumar"},
         ],
     },
@@ -105,7 +105,7 @@ ROOM_TYPES = [
             {"code": "LR-01", "floor": "2", "status": "available", "housekeeping_status": "clean", "assignee": "Sofia Fernandes"},
             {"code": "LR-02", "floor": "2", "status": "cleaning", "housekeeping_status": "in_progress", "assignee": "Sofia Fernandes"},
             {"code": "LR-03", "floor": "2", "status": "available", "housekeeping_status": "clean", "assignee": "Ravi Kumar"},
-            {"code": "LR-04", "floor": "3", "status": "maintenance", "housekeeping_status": "dirty", "assignee": "Anita D'Souza", "notes": "Plumbing leak under repair"},
+            {"code": "LR-04", "floor": "3", "status": "maintenance", "housekeeping_status": "dirty", "assignee": "Ravi Kumar", "notes": "Plumbing leak under repair"},
         ],
     },
 ]
