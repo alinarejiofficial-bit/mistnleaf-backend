@@ -128,10 +128,13 @@ class StaffUserWriteSerializer(serializers.ModelSerializer):
         password = validated_data.pop("password", None)
         for key, value in validated_data.items():
             setattr(instance, key, value)
+        if "is_active" in validated_data:
+            instance.is_active = bool(validated_data["is_active"])
         apply_super_admin_flags(instance, instance.role)
         if password:
             instance.set_password(password)
         instance.save()
+        instance.refresh_from_db(fields=["is_active"])
         return instance
 
 
