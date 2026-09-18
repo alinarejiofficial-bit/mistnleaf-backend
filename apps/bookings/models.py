@@ -30,6 +30,12 @@ class Booking(models.Model):
         PENDING = "Pending", "Pending"
         REFUNDED = "Refunded", "Refunded"
 
+    class PaymentMethod(models.TextChoices):
+        UPI = "UPI", "UPI"
+        CARD = "Card", "Card"
+        CASH = "Cash", "Cash"
+        BANK_TRANSFER = "Bank transfer", "Bank transfer"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     reference = models.CharField(max_length=32, unique=True, blank=True)
     guest_name = models.CharField(max_length=120, blank=True)
@@ -65,6 +71,12 @@ class Booking(models.Model):
         max_length=20,
         choices=PaymentStatus.choices,
         default=PaymentStatus.PENDING,
+    )
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PaymentMethod.choices,
+        blank=True,
+        default="",
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0"))
     paid_amount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal("0"))

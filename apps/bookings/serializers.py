@@ -121,6 +121,7 @@ class StaffBookingSerializer(serializers.ModelSerializer):
     checkOut = serializers.DateField(source="check_out", format="%Y-%m-%d")
     nights = serializers.IntegerField(read_only=True)
     paymentStatus = serializers.CharField(source="payment_status")
+    paymentMethod = serializers.CharField(source="payment_method", required=False, allow_blank=True)
     paidAmount = serializers.DecimalField(source="paid_amount", max_digits=10, decimal_places=2)
 
     class Meta:
@@ -141,6 +142,7 @@ class StaffBookingSerializer(serializers.ModelSerializer):
             "status",
             "source",
             "paymentStatus",
+            "paymentMethod",
             "amount",
             "paidAmount",
             "notes",
@@ -161,12 +163,18 @@ class StaffBookingUpdateSerializer(serializers.ModelSerializer):
     adults = serializers.IntegerField(required=False, min_value=1, max_value=6)
     children = serializers.IntegerField(required=False, min_value=0, max_value=6)
     source = serializers.ChoiceField(choices=Booking.Source.choices, required=False)
+    payment_method = serializers.ChoiceField(
+        choices=Booking.PaymentMethod.choices,
+        required=False,
+        allow_blank=True,
+    )
 
     class Meta:
         model = Booking
         fields = (
             "status",
             "payment_status",
+            "payment_method",
             "paid_amount",
             "room_unit",
             "notes",
@@ -213,6 +221,11 @@ class StaffBookingCreateSerializer(serializers.Serializer):
         choices=Booking.PaymentStatus.choices,
         default=Booking.PaymentStatus.PENDING,
         required=False,
+    )
+    paymentMethod = serializers.ChoiceField(
+        choices=Booking.PaymentMethod.choices,
+        required=False,
+        allow_blank=True,
     )
     paidAmount = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
 
@@ -274,6 +287,7 @@ class StaffBookingCreateSerializer(serializers.Serializer):
             paid_amount=paid,
             status=validated_data.get("status") or Booking.Status.CONFIRMED,
             payment_status=validated_data.get("paymentStatus") or Booking.PaymentStatus.PENDING,
+            payment_method=validated_data.get("paymentMethod") or "",
             source=validated_data.get("source") or Booking.Source.WALK_IN,
         )
         sync_room_unit_from_booking(booking)
