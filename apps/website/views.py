@@ -278,7 +278,7 @@ def booking_search(request):
     )
     if request.method == "POST" and form.is_valid():
         data = form.cleaned_data
-        if data["check_out"] <= data["check_in"]:
+        if data["check_out"] < data["check_in"]:
             return render(
                 request,
                 "website/booking/search.html",

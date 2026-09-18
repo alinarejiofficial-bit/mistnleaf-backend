@@ -57,8 +57,8 @@ class PublicBookingCreateSerializer(serializers.Serializer):
     notes = serializers.CharField(required=False, allow_blank=True, default="")
 
     def validate(self, attrs):
-        if attrs["checkOut"] <= attrs["checkIn"]:
-            raise serializers.ValidationError({"checkOut": "Check-out must be after check-in."})
+        if attrs["checkOut"] < attrs["checkIn"]:
+            raise serializers.ValidationError({"checkOut": "Check-out cannot be before check-in."})
 
         room_type = RoomType.objects.filter(slug=attrs["room"], is_active=True).first()
         if not room_type:
@@ -77,14 +77,14 @@ class PublicBookingCreateSerializer(serializers.Serializer):
         if not match:
             raise serializers.ValidationError({"room": "Selected room is not available for these dates."})
 
-        nights = (attrs["checkOut"] - attrs["checkIn"]).days
+        nights = max((attrs["checkOut"] - attrs["checkIn"]).days, 1)
         attrs["amount"] = room_type.base_rate * nights
         return attrs
 
     @transaction.atomic
     def create(self, validated_data):
         room_type = validated_data["room_type"]
-        nights = (validated_data["checkOut"] - validated_data["checkIn"]).days
+        nights = max((validated_data["checkOut"] - validated_data["checkIn"]).days, 1)
         amount = room_type.base_rate * nights
         unit = assign_available_unit(room_type)
         booking = Booking.objects.create(
@@ -191,9 +191,9 @@ class StaffBookingUpdateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         check_in = attrs.get("check_in", getattr(self.instance, "check_in", None))
         check_out = attrs.get("check_out", getattr(self.instance, "check_out", None))
-        if check_in and check_out and check_out <= check_in:
+        if check_in and check_out and check_out < check_in:
             raise serializers.ValidationError(
-                {"checkOut": "Check-out must be after check-in."}
+                {"checkOut": "Check-out cannot be before check-in."}
             )
         return attrs
 
@@ -230,8 +230,8 @@ class StaffBookingCreateSerializer(serializers.Serializer):
     paidAmount = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
 
     def validate(self, attrs):
-        if attrs["checkOut"] <= attrs["checkIn"]:
-            raise serializers.ValidationError({"checkOut": "Check-out must be after check-in."})
+        if attrs["checkOut"] < attrs["checkIn"]:
+            raise serializers.ValidationError({"checkOut": "Check-out cannot be before check-in."})
 
         room_type = None
         unit = None
@@ -265,7 +265,7 @@ class StaffBookingCreateSerializer(serializers.Serializer):
         if not unit:
             unit = assign_available_unit(room_type)
         attrs["unit"] = unit
-        nights = (attrs["checkOut"] - attrs["checkIn"]).days
+        nights = max((attrs["checkOut"] - attrs["checkIn"]).days, 1)
         attrs["amount"] = room_type.base_rate * nights
         return attrs
 

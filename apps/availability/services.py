@@ -1,14 +1,21 @@
-from datetime import date
+from datetime import date, timedelta
 
 from apps.bookings.models import Booking
 from apps.rooms.models import RoomType, RoomUnit
 
 
 def nights_between(check_in: date, check_out: date) -> int:
-    if not check_in or not check_out:
+    """Billable nights. Same-day check-in/out counts as 1 night."""
+    if not check_in or not check_out or check_out < check_in:
         return 0
-    delta = (check_out - check_in).days
-    return delta if delta > 0 else 0
+    return max((check_out - check_in).days, 1)
+
+
+def exclusive_end(check_in: date, check_out: date) -> date:
+    """Half-open stay end; same-day stays occupy the check-in date."""
+    if check_out > check_in:
+        return check_out
+    return check_in + timedelta(days=1)
 
 
 def dates_overlap(
@@ -17,7 +24,9 @@ def dates_overlap(
     b_start: date,
     b_end: date,
 ) -> bool:
-    return a_start < b_end and b_start < a_end
+    a_ex = exclusive_end(a_start, a_end)
+    b_ex = exclusive_end(b_start, b_end)
+    return a_start < b_ex and b_start < a_ex
 
 
 def is_unit_available(
@@ -117,7 +126,7 @@ def get_availability(
             "guests": guests,
             "nights": 0,
             "valid": False,
-            "message": "Check-out must be after check-in.",
+            "message": "Check-out cannot be before check-in.",
             "results": [],
         }
 

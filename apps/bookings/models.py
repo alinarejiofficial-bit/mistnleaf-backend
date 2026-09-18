@@ -92,7 +92,9 @@ class Booking(models.Model):
 
     @property
     def nights(self) -> int:
-        return max((self.check_out - self.check_in).days, 0)
+        if self.check_out < self.check_in:
+            return 0
+        return max((self.check_out - self.check_in).days, 1)
 
     @classmethod
     def blocking_statuses(cls):

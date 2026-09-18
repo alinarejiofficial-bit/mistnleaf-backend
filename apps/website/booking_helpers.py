@@ -60,8 +60,9 @@ def nights_between(check_in: str, check_out: str) -> int:
         return 0
     start = datetime.strptime(check_in, "%Y-%m-%d").date()
     end = datetime.strptime(check_out, "%Y-%m-%d").date()
-    delta = (end - start).days
-    return delta if delta > 0 else 0
+    if end < start:
+        return 0
+    return max((end - start).days, 1)
 
 
 def require_search(query: dict) -> bool:
